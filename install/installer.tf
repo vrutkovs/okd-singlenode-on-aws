@@ -60,6 +60,8 @@ networking:
 platform:
   aws:
     region: ${var.aws_region}
+bootstrapInPlace:
+  installationDisk: /dev/xvda
 pullSecret: '${file(var.openshift_pull_secret)}'
 sshKey: '${tls_private_key.installkey.public_key_openssh}'
 %{if var.airgapped["enabled"]}imageContentSources:
