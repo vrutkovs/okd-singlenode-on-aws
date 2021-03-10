@@ -417,6 +417,10 @@ resource "null_resource" "generate_ignition_config" {
   provisioner "local-exec" {
     command = "${path.module}/openshift-install --dir=${path.module}/temp create single-node-ignition-config"
   }
+
+  provisioner "local-exec" {
+    command = "${path.module}/openshift-install --dir=${path.module}/temp create ignition-config"
+  }
 }
 
 resource "null_resource" "cleanup" {
