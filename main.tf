@@ -123,7 +123,7 @@ module "masters" {
 
   availability_zones       = var.aws_azs
   az_to_subnet_id          = module.vpc.az_to_private_subnet_id
-  instance_count           = length(var.aws_azs)
+  instance_count           = 0
   master_sg_ids            = [module.vpc.master_sg_id]
   root_volume_iops         = var.aws_master_root_volume_iops
   root_volume_size         = var.aws_master_root_volume_size
