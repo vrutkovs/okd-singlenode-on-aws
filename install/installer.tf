@@ -413,7 +413,7 @@ resource "null_resource" "generate_ignition_config" {
   }
 
   provisioner "local-exec" {
-    command = "${path.module}/openshift-install --dir=${path.module}/temp create ignition-configs"
+    command = "${path.module}/openshift-install --dir=${path.module}/temp create single-node-ignition-config"
   }
 }
 
@@ -444,7 +444,7 @@ data "local_file" "bootstrap_ign" {
     null_resource.generate_ignition_config
   ]
 
-  filename =  "${path.module}/temp/bootstrap.ign"
+  filename =  "${path.module}/temp/bootstrap-in-place-for-live-iso.ign"
 }
 
 data "local_file" "master_ign" {
