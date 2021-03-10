@@ -2,3 +2,6 @@ terraform.tfvars
 .terraform/
 terraform.tfstate
 .terraform.tfstate.lock.info
+install/oc
+install/openshift-install
+install/temp/
