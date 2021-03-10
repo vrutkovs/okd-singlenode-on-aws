@@ -1,14 +1,14 @@
-cluster_id = "ocp4-9n2nn"
-clustername = "ocp4"
+cluster_id = "okd-test"
+clustername = "okd"
 base_domain = "example.com"
-openshift_pull_secret = "./openshift_pull_secret.json"
+openshift_pull_secret = "./pull_secret.json"
 openshift_payload = "registry.ci.openshift.org/origin/release:4.8.0-0.okd-2021-03-10-102931"
 
 aws_access_key_id = "AAAA"
 aws_secret_access_key = "AbcDefGhiJkl"
-aws_ami = "ami-06f85a7940faa3217"
+aws_ami = "ami-01f39e95b77950f08"
 aws_extra_tags = {
-  "kubernetes.io/cluster/ocp4-9n2nn" = "owned",
+  "kubernetes.io/cluster/okd-test" = "owned",
   "owner" = "admin"
   }
 aws_azs = [
