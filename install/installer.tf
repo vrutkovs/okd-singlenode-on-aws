@@ -5,52 +5,14 @@ locals {
 
 resource "null_resource" "openshift_installer" {
   provisioner "local-exec" {
-    command = <<EOF
-case $(uname -s) in
-  Linux)
-    wget -r -l1 -np -nd ${var.openshift_installer_url} -P ${path.module} -A 'openshift-install-linux-4*.tar.gz'
-    ;;
-  Darwin)
-    wget -r -l1 -np -nd ${var.openshift_installer_url} -P ${path.module} -A 'openshift-install-mac-4*.tar.gz'
-    ;;
-  *) exit 1
-    ;;
-esac
-EOF
+    command = "oc adm release extract --command='openshift-install' ${var.openshift_payload} --to ${path.module}"
   }
 
-  provisioner "local-exec" {
-    command = "tar zxvf ${path.module}/openshift-install-*-4*.tar.gz -C ${path.module}"
-  }
-
-  provisioner "local-exec" {
-    command = "rm -f ${path.module}/openshift-install-*-4*.tar.gz ${path.module}/robots*.txt* ${path.module}/README.md"
-  }
 }
 
 resource "null_resource" "openshift_client" {
   provisioner "local-exec" {
-    command = <<EOF
-case $(uname -s) in
-  Linux)
-    wget -r -l1 -np -nd ${var.openshift_installer_url} -P ${path.module} -A 'openshift-client-linux-4*.tar.gz'
-    ;;
-  Darwin)
-    wget -r -l1 -np -nd ${var.openshift_installer_url} -P ${path.module} -A 'openshift-client-mac-4*.tar.gz'
-    ;;
-  *)
-    exit 1
-    ;;
-esac
-EOF
-  }
-
-  provisioner "local-exec" {
-    command = "tar zxvf ${path.module}/openshift-client-*-4*.tar.gz -C ${path.module}"
-  }
-
-  provisioner "local-exec" {
-    command = "rm -f ${path.module}/openshift-client-*-4*.tar.gz ${path.module}/robots*.txt* ${path.module}/README.md"
+    command = "oc adm release extract --command='oc' ${var.openshift_payload} --to ${path.module}"
   }
 }
 

@@ -75,10 +75,10 @@ variable "openshift_pull_secret" {
   default     = "./openshift_pull_secret.json"
 }
 
-variable "openshift_installer_url" {
+variable "openshift_payload" {
   type        = string
-  description = "The URL to download OpenShift installer."
-  default     = "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest"
+  description = "Openshift payload"
+  default     = "registry.ci.openshift.org/origin/release:4.8"
 }
 
 variable "aws_access_key_id" {

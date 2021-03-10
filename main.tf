@@ -37,7 +37,7 @@ module "installer" {
   vpc_cidr_block = var.machine_cidr
   master_count = length(var.aws_azs)
   openshift_pull_secret = var.openshift_pull_secret
-  openshift_installer_url = var.openshift_installer_url
+  openshift_payload = var.openshift_payload
   aws_worker_root_volume_iops = var.aws_worker_root_volume_iops
   aws_worker_root_volume_size = var.aws_worker_root_volume_size
   aws_worker_root_volume_type = var.aws_worker_root_volume_type

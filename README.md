@@ -2,12 +2,16 @@
 
 This project automates the Red Hat OpenShift Container Platform 4.x installation on Amazon AWS platform. It focuses on the OpenShift User-provided infrastructure installation (UPI) where implementers provide pre-existing infrastructure including VMs, networking, load balancers, DNS configuration etc.
 
-* [Terraform Automation](#terraform-automation)
-* [Infrastructure Architecture](#infrastructure-architecture)
-* [Installation Procedure](#installation-procedure)
-* [Airgapped installation](#airgapped-installation)
-* [Removal procedure](#removal-procedure)
-* [Advanced topics](#advanced-topics)
+- [Automated OpenShift v4 installation on AWS](#automated-openshift-v4-installation-on-aws)
+  - [Terraform Automation](#terraform-automation)
+    - [Prerequisites](#prerequisites)
+  - [Infrastructure Architecture](#infrastructure-architecture)
+  - [Installation Procedure](#installation-procedure)
+    - [Deploying the cluster](#deploying-the-cluster)
+    - [Removing bootstrap node](#removing-bootstrap-node)
+  - [Airgapped Installation](#airgapped-installation)
+  - [Removal Procedure](#removal-procedure)
+  - [Advanced topics](#advanced-topics)
 
 ## Terraform Automation
 
@@ -122,7 +126,7 @@ cluster_id = "ocp4-9n2nn"
 clustername = "ocp4"
 base_domain = "example.com"
 openshift_pull_secret = "./openshift_pull_secret.json"
-openshift_installer_url = "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest"
+openshift_payload = "registry.ci.openshift.org/origin/release:4.8.0-0.okd-2021-03-10-102931"
 
 aws_access_key_id = "AAAA"
 aws_secret_access_key = "AbcDefGhiJkl"
@@ -146,7 +150,7 @@ aws_publish_strategy = "External"
 | `clustername`     | yes  | The name of the OpenShift cluster you will install     |
 | `base_domain` | yes | The domain that has been created in Route53 public hosted zone |
 | `openshift_pull_secret` | no | The value refers to a file name that contain downloaded pull secret from https://cloud.redhat.com/openshift/install; the default name is `openshift_pull_secret.json` |
-| `openshift_installer_url` | no | The URL to the download site for Red Hat OpenShift installation and client codes.  |
+| `openshift_payload` | no | Openshift payload pullspec  |
 | `aws_region`   | yes  | AWS region that the VPC will be created in.  By default, uses `us-east-2`.  Note that for an HA installation, the AWS selected region should have at least 3 availability zones. |
 | `aws_extra_tags`  | no  | AWS tag to identify a resource for example owner:myname     |
 | `aws_ami` | yes | Red Hat CoreOS ami for your region (see [here](https://docs.openshift.com/container-platform/4.2/installing/installing_aws_user_infra/installing-aws-user-infra.html#installation-aws-user-infra-rhcos-ami_installing-aws-user-infra)). Other platforms images information can be found [here](https://github.com/openshift/installer/blob/master/data/data/rhcos.json) |
@@ -237,7 +241,7 @@ cluster_id = "ocp4-9n2nn"
 clustername = "ocp4"
 base_domain = "example.com"
 openshift_pull_secret = "./openshift_pull_secret.json"
-openshift_installer_url = "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest"
+openshift_payload = "registry.ci.openshift.org/origin/release:4.8"
 
 aws_access_key_id = "AAAA"
 aws_secret_access_key = "AbcDefGhiJkl"

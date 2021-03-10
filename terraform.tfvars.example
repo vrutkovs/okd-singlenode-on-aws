@@ -2,7 +2,7 @@ cluster_id = "ocp4-9n2nn"
 clustername = "ocp4"
 base_domain = "example.com"
 openshift_pull_secret = "./openshift_pull_secret.json"
-openshift_installer_url = "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest"
+openshift_payload = "registry.ci.openshift.org/origin/release:4.8.0-0.okd-2021-03-10-102931"
 
 aws_access_key_id = "AAAA"
 aws_secret_access_key = "AbcDefGhiJkl"
