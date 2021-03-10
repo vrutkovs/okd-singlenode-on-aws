@@ -63,7 +63,7 @@ platform:
 bootstrapInPlace:
   installationDisk: /dev/xvda
 pullSecret: '${file(var.openshift_pull_secret)}'
-sshKey: '${tls_private_key.installkey.public_key_openssh}'
+sshKey: ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBI54TLk2HagnSAI06HcksarHAVOYeqaIz9GMH6lxDa3SUbZ4+jw5hfVVlprTRmtNm9jTRB1Is15H5CHr9UT+8ZQ= vrutkovs@localhost.localdomain
 %{if var.airgapped["enabled"]}imageContentSources:
 - mirrors:
   - ${var.airgapped["repository"]}
