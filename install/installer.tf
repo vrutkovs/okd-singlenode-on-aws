@@ -233,7 +233,7 @@ metadata:
   name: ${local.infrastructure_id}-worker-${element(var.aws_worker_availability_zones, count.index)}
   namespace: openshift-machine-api
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       machine.openshift.io/cluster-api-cluster: ${local.infrastructure_id}
