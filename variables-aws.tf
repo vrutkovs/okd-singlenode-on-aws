@@ -9,8 +9,8 @@ EOF
 
 variable "aws_bootstrap_instance_type" {
   type = string
-  description = "Instance type for the bootstrap node. Default: `i3.xlarge`."
-  default = "i3.xlarge"
+  description = "Instance type for the bootstrap node. Default: `m5.x2large`."
+  default = "m4.2xlarge"
 }
 
 variable "aws_master_instance_type" {
