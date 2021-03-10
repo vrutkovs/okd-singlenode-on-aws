@@ -419,7 +419,7 @@ resource "null_resource" "generate_ignition_config" {
   }
 
   provisioner "local-exec" {
-    command = "${path.module}/openshift-install --dir=${path.module}/temp create ignition-config"
+    command = "${path.module}/openshift-install --dir=${path.module}/temp create ignition-configs"
   }
 }
 
