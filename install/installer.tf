@@ -92,7 +92,7 @@ networking:
   - cidr: ${var.cluster_network_cidr}
     hostPrefix: ${var.cluster_network_host_prefix}
   machineCIDR:  ${var.vpc_cidr_block}
-  networkType: OpenShiftSDN
+  networkType: OVNKubernetes
   serviceNetwork:
   - ${var.service_network_cidr}
 platform:
