@@ -143,6 +143,13 @@ resource "aws_instance" "bootstrap" {
     iops        = var.volume_type == "io1" ? var.volume_iops : 0
   }
 
+  ebs_block_device {
+    device_name = "/dev/xvdb"
+    volume_type = var.volume_type
+    volume_size = var.volume_size
+    iops        = var.volume_type == "io1" ? var.volume_iops : 0
+  }
+
   volume_tags = merge(
     {
     "Name" = "${var.cluster_id}-bootstrap-vol"
@@ -194,4 +201,3 @@ resource "aws_security_group_rule" "bootstrap_journald_gateway" {
   from_port   = 19531
   to_port     = 19531
 }
-

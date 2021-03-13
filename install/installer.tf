@@ -61,7 +61,7 @@ platform:
   aws:
     region: ${var.aws_region}
 bootstrapInPlace:
-  installationDisk: /dev/xvda
+  installationDisk: /dev/xvdb
 pullSecret: '${file(var.openshift_pull_secret)}'
 sshKey: ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBI54TLk2HagnSAI06HcksarHAVOYeqaIz9GMH6lxDa3SUbZ4+jw5hfVVlprTRmtNm9jTRB1Is15H5CHr9UT+8ZQ= vrutkovs@localhost.localdomain
 %{if var.airgapped["enabled"]}imageContentSources:
