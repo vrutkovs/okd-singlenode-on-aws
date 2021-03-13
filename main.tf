@@ -69,6 +69,8 @@ module "dns" {
   api_external_lb_zone_id  = module.vpc.aws_lb_api_external_zone_id
   api_internal_lb_dns_name = module.vpc.aws_lb_api_internal_dns_name
   api_internal_lb_zone_id  = module.vpc.aws_lb_api_internal_zone_id
+  ingress_lb_dns_name      = module.vpc.aws_lb_ingress_dns_name
+  ingress_lb_zone_id       = module.vpc.aws_lb_ingress_zone_id
   base_domain              = var.base_domain
   cluster_domain           = "${var.clustername}.${var.base_domain}"
   cluster_id               = var.cluster_id

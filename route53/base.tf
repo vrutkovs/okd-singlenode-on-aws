@@ -67,3 +67,15 @@ resource "aws_route53_record" "api_external_internal_zone" {
     evaluate_target_health = false
   }
 }
+
+resource "aws_route53_record" "ingress_zone" {
+  zone_id = data.aws_route53_zone.public[0].zone_id
+  name    = "*.apps.${var.cluster_domain}"
+  type    = "A"
+
+  alias {
+    name                   = var.ingress_lb_dns_name
+    zone_id                = var.ingress_lb_zone_id
+    evaluate_target_health = false
+  }
+}

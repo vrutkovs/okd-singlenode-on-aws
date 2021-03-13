@@ -43,6 +43,16 @@ variable "api_internal_lb_zone_id" {
   type        = string
 }
 
+variable "ingress_lb_dns_name" {
+  description = "Ingress LB DNS name"
+  type        = string
+}
+
+variable "ingress_lb_zone_id" {
+  description = "Ingress LB Zone ID"
+  type        = string
+}
+
 variable "publish_strategy" {
   type        = string
   description = <<EOF

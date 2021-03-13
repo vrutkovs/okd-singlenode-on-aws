@@ -42,6 +42,29 @@ resource "aws_lb" "api_external" {
   depends_on = [aws_internet_gateway.igw]
 }
 
+resource "aws_lb" "ingress" {
+  count = local.public_endpoints ? 1 : 0
+
+  name                             = "${var.cluster_id}-ing"
+  load_balancer_type               = "network"
+  subnets                          = data.aws_subnet.public.*.id
+  internal                         = false
+  enable_cross_zone_load_balancing = true
+
+  tags = merge(
+    {
+      "Name" = "${var.cluster_id}-ing"
+    },
+    var.tags,
+  )
+
+  timeouts {
+    create = "20m"
+  }
+
+  depends_on = [aws_internet_gateway.igw]
+}
+
 resource "aws_lb_target_group" "api_internal" {
   name     = "${var.cluster_id}-aint"
   protocol = "TCP"
@@ -119,6 +142,60 @@ resource "aws_lb_target_group" "services" {
   }
 }
 
+resource "aws_lb_target_group" "ingress_http" {
+  count = local.public_endpoints ? 1 : 0
+
+  name     = "${var.cluster_id}-inghttp"
+  protocol = "TCP"
+  port     = 80
+  vpc_id   = data.aws_vpc.cluster_vpc.id
+
+  target_type = "ip"
+
+  tags = merge(
+    {
+      "Name" = "${var.cluster_id}-ingress"
+    },
+    var.tags,
+  )
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    interval            = 10
+    port                = 80
+    protocol            = "HTTP"
+    path                = "/"
+  }
+}
+
+resource "aws_lb_target_group" "ingress_https" {
+  count = local.public_endpoints ? 1 : 0
+
+  name     = "${var.cluster_id}-inghttps"
+  protocol = "TCP"
+  port     = 443
+  vpc_id   = data.aws_vpc.cluster_vpc.id
+
+  target_type = "ip"
+
+  tags = merge(
+    {
+      "Name" = "${var.cluster_id}-ingress"
+    },
+    var.tags,
+  )
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    interval            = 10
+    port                = 443
+    protocol            = "HTTPS"
+    path                = "/"
+  }
+}
+
 resource "aws_lb_listener" "api_internal_api" {
   load_balancer_arn = aws_lb.api_internal.arn
   protocol          = "TCP"
@@ -154,3 +231,29 @@ resource "aws_lb_listener" "api_external_api" {
   }
 }
 
+resource "aws_lb_listener" "ingress-http" {
+  count = local.public_endpoints ? 1 : 0
+
+  load_balancer_arn = aws_lb.ingress[0].arn
+  protocol          = "TCP"
+  port              = "80"
+
+  default_action {
+    target_group_arn = aws_lb_target_group.ingress_http[0].arn
+    type             = "forward"
+  }
+}
+
+
+resource "aws_lb_listener" "ingress-https" {
+  count = local.public_endpoints ? 1 : 0
+
+  load_balancer_arn = aws_lb.ingress[0].arn
+  protocol          = "TCP"
+  port              = "443"
+
+  default_action {
+    target_group_arn = aws_lb_target_group.ingress_https[0].arn
+    type             = "forward"
+  }
+}
