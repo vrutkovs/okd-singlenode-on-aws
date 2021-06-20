@@ -317,10 +317,17 @@ resource "aws_instance" "bootstrap" {
     var.tags,
   )
 
+  # TODO: Use aws_ebs_volume / aws_volume_attachment to be able to swap those via terraform
   root_block_device {
     volume_type = var.volume_type
     volume_size = var.volume_size
     iops        = var.volume_type == "io1" ? var.volume_iops : 0
+    tags        = merge(
+      {
+      "Name" = "${var.cluster_id}-bootstrap-vol"
+      },
+      var.tags,
+    )
   }
 
   ebs_block_device {
@@ -328,14 +335,13 @@ resource "aws_instance" "bootstrap" {
     volume_type = var.volume_type
     volume_size = var.volume_size
     iops        = var.volume_type == "io1" ? var.volume_iops : 0
+    tags        = merge(
+      {
+      "Name" = "${var.cluster_id}-master-vol"
+      },
+      var.tags,
+    )
   }
-
-  volume_tags = merge(
-    {
-    "Name" = "${var.cluster_id}-vol"
-    },
-    var.tags,
-  )
 }
 
 resource "aws_lb_target_group_attachment" "bootstrap" {
