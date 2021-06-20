@@ -46,7 +46,7 @@ compute:
 controlPlane:
   hyperthreading: Enabled
   name: master
-  replicas: ${var.master_count}
+  replicas: 1
 metadata:
   name: ${var.clustername}
 networking:

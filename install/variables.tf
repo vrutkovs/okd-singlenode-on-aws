@@ -63,13 +63,6 @@ EOF
 
 }
 
-
-variable "master_count" {
-  type        = number
-  description = "The number of master nodes."
-  default     = 3
-}
-
 variable "openshift_pull_secret" {
   type        = string
   default     = "./openshift_pull_secret.json"

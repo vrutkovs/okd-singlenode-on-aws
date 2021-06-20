@@ -35,7 +35,6 @@ module "installer" {
   aws_access_key_id = var.aws_access_key_id
   aws_secret_access_key = var.aws_secret_access_key
   vpc_cidr_block = var.machine_cidr
-  master_count = length(var.aws_azs)
   openshift_pull_secret = var.openshift_pull_secret
   openshift_payload = var.openshift_payload
   aws_worker_root_volume_iops = var.aws_worker_root_volume_iops
