@@ -125,78 +125,6 @@ resource "null_resource" "manifest_cleanup_control_plane_machineset" {
   }
 }
 
-# rewrite the domains and the infrastructure id we use in the cluster
-resource "local_file" "cluster_infrastructure_config" {
-  depends_on = [
-    null_resource.generate_manifests
-  ]
-  file_permission = "0644"
-  filename        =  "${path.module}/temp/manifests/cluster-infrastructure-02-config.yml"
-
-  content = <<EOF
-apiVersion: config.openshift.io/v1
-kind: Infrastructure
-metadata:
-  creationTimestamp: null
-  name: cluster
-spec:
-  cloudConfig:
-    name: ""
-status:
-  apiServerInternalURI: https://api-int.${var.clustername}.${var.domain}:6443
-  apiServerURL: https://api.${var.clustername}.${var.domain}:6443
-  etcdDiscoveryDomain: ${var.clustername}.${var.domain}
-  infrastructureName: ${local.infrastructure_id}
-  platform: AWS
-  platformStatus:
-    aws:
-      region: ${var.aws_region}
-    type: AWS
-EOF
-}
-# modify manifests/cluster-dns-02-config.yml
-resource "null_resource" "manifest_cleanup_dns_config" {
-  depends_on = [
-    null_resource.generate_manifests
-  ]
-
-  triggers = {
-    install_config =  data.template_file.install_config_yaml.rendered
-    local_file     =  local_file.install_config.id
-  }
-
-  provisioner "local-exec" {
-    command = "rm -f ${path.module}/temp/manifests/cluster-dns-02-config.yml"
-  }
-}
-
-#redo the dns config
-resource "local_file" "dns_config" {
-  count = var.airgapped.enabled ? 0 : 1
-  depends_on = [
-    null_resource.manifest_cleanup_dns_config
-  ]
-
-  file_permission = "0644"
-  filename        = "${path.module}/temp/manifests/cluster-dns-02-config.yml"
-  content         = <<EOF
-apiVersion: config.openshift.io/v1
-kind: DNS
-metadata:
-  creationTimestamp: null
-  name: cluster
-spec:
-  baseDomain: ${var.clustername}.${var.domain}
-  privateZone:
-      tags:
-        Name: ${local.infrastructure_id}-int
-        kubernetes.io/cluster/${local.infrastructure_id}: owned
-  publicZone:
-    id: ${var.dns_public_id}
-status: {}
-EOF
-}
-
 # remove these machinesets, we will rewrite them using the security group and subnets that we created
 resource "null_resource" "manifest_cleanup_worker_machineset" {
   depends_on = [
@@ -290,28 +218,6 @@ spec:
 EOF
 }
 
-#redo the worker machineset
-resource "local_file" "ingresscontroller" {
-  count           = var.airgapped.enabled ? 1 : 0
-
-  depends_on = [
-    null_resource.generate_manifests
-  ]
-  file_permission = "0644"
-  filename = "${path.module}/temp/openshift/99_default_ingress_controller.yml"
-  content = <<EOF
-apiVersion: operator.openshift.io/v1
-kind: IngressController
-metadata:
-  name: default
-  namespace: openshift-ingress-operator
-spec:
-  replicas: 2
-  endpointPublishingStrategy:
-    type: Private
-EOF
-}
-
 resource "local_file" "awssecrets1" {
   count           = var.airgapped.enabled ? 1 : 0
 
@@ -383,19 +289,15 @@ resource "null_resource" "generate_ignition_config" {
   depends_on = [
     null_resource.manifest_cleanup_control_plane_machineset,
     local_file.worker_machineset,
-    local_file.dns_config,
-    local_file.ingresscontroller,
     local_file.awssecrets1,
     local_file.awssecrets2,
     local_file.awssecrets3,
     local_file.airgapped_registry_upgrades,
-    local_file.cluster_infrastructure_config,
   ]
 
   triggers = {
     install_config                   =  data.template_file.install_config_yaml.rendered
     local_file_install_config        =  local_file.install_config.id
-    local_file_infrastructure_config =  local_file.cluster_infrastructure_config.id
   }
 
   provisioner "local-exec" {
