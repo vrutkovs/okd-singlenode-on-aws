@@ -39,14 +39,12 @@ output "aws_lb_target_group_arns" {
       aws_lb_target_group.api_internal.*.arn,
       aws_lb_target_group.services.*.arn,
       aws_lb_target_group.api_external.*.arn,
-      aws_lb_target_group.ingress_http.*.arn,
-      aws_lb_target_group.ingress_https.*.arn,
     ),
   )
 }
 
 output "aws_lb_target_group_arns_length" {
-  value = "5"
+  value = "3"
 }
 
 output "aws_lb_api_external_dns_name" {
