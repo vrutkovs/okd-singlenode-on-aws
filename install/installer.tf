@@ -64,14 +64,6 @@ bootstrapInPlace:
   installationDisk: /dev/xvdb
 pullSecret: '${file(var.openshift_pull_secret)}'
 sshKey: ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBI54TLk2HagnSAI06HcksarHAVOYeqaIz9GMH6lxDa3SUbZ4+jw5hfVVlprTRmtNm9jTRB1Is15H5CHr9UT+8ZQ= vrutkovs@localhost.localdomain
-%{if var.airgapped["enabled"]}imageContentSources:
-- mirrors:
-  - ${var.airgapped["repository"]}
-  source: quay.io/openshift-release-dev/ocp-release
-- mirrors:
-  - ${var.airgapped["repository"]}
-  source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
-%{endif}
 EOF
 }
 
@@ -223,7 +215,6 @@ resource "null_resource" "generate_ignition_config" {
   depends_on = [
     null_resource.manifest_cleanup_control_plane_machineset,
     local_file.worker_machineset,
-    local_file.airgapped_registry_upgrades,
   ]
 
   triggers = {
@@ -320,26 +311,4 @@ resource "null_resource" "get_auth_config" {
     when    = destroy
     command = "rm ${path.root}/kubeconfig ${path.root}/kubeadmin-password "
   }
-}
-
-resource "local_file" "airgapped_registry_upgrades" {
-  count    = var.airgapped["enabled"] ? 1 : 0
-  filename = "${path.module}/temp/openshift/99_airgapped_registry_upgrades.yaml"
-  depends_on = [
-    null_resource.generate_manifests,
-  ]
-  content  = <<EOF
-apiVersion: operator.openshift.io/v1alpha1
-kind: ImageContentSourcePolicy
-metadata:
-  name: airgapped
-spec:
-  repositoryDigestMirrors:
-  - mirrors:
-    - ${var.airgapped["repository"]}
-    source: quay.io/openshift-release-dev/ocp-release
-  - mirrors:
-    - ${var.airgapped["repository"]}
-    source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
-EOF
 }
