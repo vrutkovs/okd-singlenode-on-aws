@@ -301,7 +301,7 @@ resource "aws_instance" "bootstrap" {
   subnet_id                   = var.subnet_id
   user_data                   = replace(data.ignition_config.redirect.rendered, "2.1.0", "3.1.0")
   # data.ignition_config.redirect.rendered
-  vpc_security_group_ids      = flatten([var.vpc_security_group_ids, aws_security_group.bootstrap.id])
+  vpc_security_group_ids      = var.vpc_security_group_ids
   associate_public_ip_address = local.public_endpoints
 
   lifecycle {
@@ -351,39 +351,4 @@ resource "aws_lb_target_group_attachment" "bootstrap" {
 
   target_group_arn = var.target_group_arns[count.index]
   target_id        = aws_instance.bootstrap.private_ip
-}
-
-resource "aws_security_group" "bootstrap" {
-  vpc_id = var.vpc_id
-
-  timeouts {
-    create = "20m"
-  }
-
-  tags = merge(
-    {
-    "Name" = "${var.cluster_id}-sg"
-    },
-    var.tags,
-  )
-}
-
-resource "aws_security_group_rule" "ssh" {
-  type              = "ingress"
-  security_group_id = aws_security_group.bootstrap.id
-
-  protocol    = "tcp"
-  cidr_blocks = local.public_endpoints ? ["0.0.0.0/0"] : var.vpc_cidrs
-  from_port   = 22
-  to_port     = 22
-}
-
-resource "aws_security_group_rule" "bootstrap_journald_gateway" {
-  type              = "ingress"
-  security_group_id = aws_security_group.bootstrap.id
-
-  protocol    = "tcp"
-  cidr_blocks = local.public_endpoints ? ["0.0.0.0/0"] : var.vpc_cidrs
-  from_port   = 19531
-  to_port     = 19531
 }

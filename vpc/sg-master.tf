@@ -272,3 +272,24 @@ resource "aws_security_group_rule" "master_ingress_services_udp_from_worker" {
   from_port = 30000
   to_port   = 32767
 }
+
+
+resource "aws_security_group_rule" "ssh" {
+  type              = "ingress"
+  security_group_id = aws_security_group.master.id
+
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  from_port   = 22
+  to_port     = 22
+}
+
+resource "aws_security_group_rule" "bootstrap_journald_gateway" {
+  type              = "ingress"
+  security_group_id = aws_security_group.master.id
+
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  from_port   = 19531
+  to_port     = 19531
+}
