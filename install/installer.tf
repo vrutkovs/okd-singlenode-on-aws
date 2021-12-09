@@ -5,14 +5,14 @@ locals {
 
 resource "null_resource" "openshift_installer" {
   provisioner "local-exec" {
-    command = "oc adm release extract --command='openshift-install' ${var.openshift_payload} --to ${path.module}"
+    command = "oc adm release extract -a ${var.openshift_pull_secret} --command='openshift-install' ${var.openshift_payload} --to ${path.module}"
   }
 
 }
 
 resource "null_resource" "openshift_client" {
   provisioner "local-exec" {
-    command = "oc adm release extract --command='oc' ${var.openshift_payload} --to ${path.module}"
+    command = "oc adm release extract -a ${var.openshift_pull_secret} --command='oc' ${var.openshift_payload} --to ${path.module}"
   }
 }
 
