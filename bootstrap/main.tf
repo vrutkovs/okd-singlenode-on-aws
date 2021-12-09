@@ -329,19 +329,6 @@ resource "aws_instance" "bootstrap" {
       var.tags,
     )
   }
-
-  ebs_block_device {
-    device_name = "/dev/xvdb"
-    volume_type = var.volume_type
-    volume_size = var.volume_size
-    iops        = var.volume_type == "io1" ? var.volume_iops : 0
-    tags        = merge(
-      {
-      "Name" = "${var.cluster_id}-master-vol"
-      },
-      var.tags,
-    )
-  }
 }
 
 resource "aws_lb_target_group_attachment" "bootstrap" {
